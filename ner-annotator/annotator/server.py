@@ -1,6 +1,6 @@
 import nltk
-
-from flask import Flask, request
+import os
+from flask import Flask, request, jsonify
 from flask_cors import cross_origin
 
 from nltk.tokenize.treebank import TreebankWordTokenizer, TreebankWordDetokenizer
@@ -26,7 +26,22 @@ def detokenize():
     tokens = request.json["tokens"]
     return {"text": TreebankWordDetokenizer().detokenize(tokens)}
 
+@app.route("/files", methods=["GET"])
+@cross_origin()
+def files():
+    files_names = []
+    list = os.listdir('./Data')
+    for item in list:
+        files_names.append(item)
+    return jsonify(files_names)
 
-
+@app.route("/files/<name>", methods=["GET"])
+@cross_origin()
+def fileData(name):
+     f = open('./Data/%s' % (name),'r')
+     data = f.read()
+     f.close()
+     return jsonify(data)   
+    
 if __name__ == "__main__":
     app.run(port=5555, debug=True)

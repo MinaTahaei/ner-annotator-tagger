@@ -36,11 +36,16 @@
           </div>
         </div>
       </div>
+      <template v-for="file in files" :key="file">
+        <button @click="select_file(file)"  class="file-box">{{file}}</button>
+
+      </template>
     </div>
   </div>
 </template>
 <script>
 import { mapState } from "vuex";
+import { mapMutations } from "vuex";
 import axios from "../axios";
 import Token from "./Token";
 import TokenBlock from "./TokenBlock";
@@ -52,6 +57,8 @@ export default {
   name: "AnnotationPage",
   data: function () {
     return {
+      files:[],
+      selectedFile:'',
       tm: new TokenManager([]),
       currentSentence: {},
       currentIndex: 0,
@@ -83,7 +90,30 @@ export default {
   beforeUnmount() {
     document.removeEventListener("mouseup", this.selectTokens);
   },
+  mounted(){
+    this.getFiles();
+  },
   methods: {
+    ...mapMutations(["setInputSentences"]),
+    getFiles(){
+      
+      axios
+        .get("/files")
+        .then((res) => {
+          this.files = res.data;
+        })
+        .catch((err) => alert(err));
+    },
+    select_file(name){
+      this.selectFile = name;
+      axios.get(`/files/${name}`)
+        .then((res) => {
+          
+          this.setInputSentences(res.data);
+          
+        })
+        .catch((err) => alert(err));
+    },
     tokenizeCurrentSentence() {
       if (this.currentIndex >= this.inputSentences.length) {
         // TODO show completed message
@@ -200,5 +230,15 @@ export default {
 <style lang="scss">
 #editor {
   padding: 1rem;
+}
+.file-box{
+  margin: 1rem;
+  padding: 10px;
+  border-radius: 20px;
+  box-shadow: 0 0 3px 0.5px #000;
+  border:none;
+  background-color:rgba(71, 231, 170, 0.466);
+  text-align: center;
+  font-size: 12px;
 }
 </style>

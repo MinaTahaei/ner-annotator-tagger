@@ -1,12 +1,12 @@
 <template>
   <div>
-    <StartPage v-if="currentPage === 'start'" v-on:file-loaded="onFileLoaded" />
-    <AnnotationPage v-if="currentPage === 'annotator'" />
+    <!-- <StartPage v-if="currentPage === 'start'" v-on:file-loaded="onFileLoaded" /> -->
+    <AnnotationPage  />
   </div>
 </template>
 
 <script>
-import StartPage from "./components/StartPage";
+
 import AnnotationPage from "./components/AnnotationPage";
 
 import "./assets/styles.scss";
@@ -19,7 +19,6 @@ export default {
     };
   },
   components: {
-    StartPage,
     AnnotationPage,
   },
   methods: {
