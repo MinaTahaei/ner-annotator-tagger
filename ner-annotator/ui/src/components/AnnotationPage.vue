@@ -37,8 +37,7 @@
         </div>
       </div>
       <template v-for="file in files" :key="file">
-        <button @click="select_file(file)"  class="file-box">{{file}}</button>
-
+        <button @click="select_file(file)" class="file-box">{{ file }}</button>
       </template>
     </div>
   </div>
@@ -57,8 +56,8 @@ export default {
   name: "AnnotationPage",
   data: function () {
     return {
-      files:[],
-      selectedFile:'',
+      files: [],
+      selectedFile: "",
       tm: new TokenManager([]),
       currentSentence: {},
       currentIndex: 0,
@@ -76,7 +75,7 @@ export default {
   },
   watch: {
     inputSentences() {
-      alert("change")
+      alert("change");
       this.currentIndex = 0;
       this.tokenizeCurrentSentence();
     },
@@ -90,13 +89,12 @@ export default {
   beforeUnmount() {
     document.removeEventListener("mouseup", this.selectTokens);
   },
-  mounted(){
+  mounted() {
     this.getFiles();
   },
   methods: {
     ...mapMutations(["setInputSentences"]),
-    getFiles(){
-      
+    getFiles() {
       axios
         .get("/files")
         .then((res) => {
@@ -104,13 +102,15 @@ export default {
         })
         .catch((err) => alert(err));
     },
-    select_file(name){
+    select_file(name) {
       this.selectFile = name;
-      axios.get(`/files/${name}`)
+      let dotIndex = name.lastIndexOf('.');
+      this.$store.commit('setFileName',name.substring(0,dotIndex))
+
+      axios
+        .get(`/files/${name}`)
         .then((res) => {
-          
           this.setInputSentences(res.data);
-          
         })
         .catch((err) => alert(err));
     },
@@ -185,13 +185,38 @@ export default {
           }
           len = this.$store.state.classes.length;
           let notIncluded = [];
+          let ALL_TAGS = {
+            Name: "PER",
+            Gender: "GEN",
+            Date: "DATE",
+            City: "CITY",
+            Address: "LOC",
+            Skills: "SKILL",
+            institute_name: "INS",
+            degree: "DEGREE",
+            major: "MAJOR",
+            work_organization: "ORG",
+            Position: "POS",
+            Certificates: "CER",
+            english_skill_level: "ENGLEVEL",
+          };
+          
           for (let i = 0; i < len; i++) {
             if (!array.includes(this.$store.state.classes[i].name.toString())) {
-              notIncluded.push(this.$store.state.classes[i].name.toString());
+              if (
+                Object.values(ALL_TAGS).includes(
+                  this.$store.state.classes[i].name
+                )
+              ) {
+                let item = Object.values(ALL_TAGS).indexOf(this.$store.state.classes[i].name);
+                notIncluded.push(Object.keys(ALL_TAGS)[item]);
+              } else {
+                notIncluded.push(this.$store.state.classes[i].name);
+              }
             }
           }
-          console.log(notIncluded.length + " : " + len)
-          if (notIncluded.length>0) {
+          // console.log(notIncluded.length + " : " + len)
+          if (notIncluded.length > 0) {
             Swal.fire({
               title: "Do you want to save?",
               showDenyButton: true,
@@ -202,21 +227,18 @@ export default {
               /* Read more about isConfirmed, isDenied below */
               if (result.isConfirmed) {
                 this.$store.commit("addAnnotation", [
-                res.data.text,
-                { entities: this.tm.exportAsAnnotation() },
+                  res.data.text,
+                  { entities: this.tm.exportAsAnnotation() },
                 ]);
                 this.currentIndex++;
                 this.tokenizeCurrentSentence();
-        
-        
+
                 Swal.fire("Saved!", "", "success");
               } else if (result.isDenied) {
                 Swal.fire("Changes are not saved", "", "info");
               }
             });
           }
-
-          
         })
         .catch((e) => {
           console.log(e);
@@ -231,13 +253,13 @@ export default {
 #editor {
   padding: 1rem;
 }
-.file-box{
+.file-box {
   margin: 1rem;
   padding: 10px;
   border-radius: 20px;
   box-shadow: 0 0 3px 0.5px #000;
-  border:none;
-  background-color:rgba(71, 231, 170, 0.466);
+  border: none;
+  background-color: rgba(71, 231, 170, 0.466);
   text-align: center;
   font-size: 12px;
 }

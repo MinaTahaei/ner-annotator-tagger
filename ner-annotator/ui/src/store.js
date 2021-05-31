@@ -39,9 +39,26 @@ export const mutations = {
     const sentences = state.originalText.split(state.separator);
     state.inputSentences = sentences.map((s, i) => ({ id: i, text: s }));
   },
-  setFilename(state,payload){
+  setFileName(state,payload){
     state.fileName = payload;
-    }
+    },
+  setTaggerName(state,payload){
+    state.taggerName = payload;
+    },
+  tagName(state ,payload){
+      
+    
+    if(Object.values(state.abbr).includes(payload)){
+        let item = Object.values(state.abbr).indexOf(payload)
+        
+        return Object.keys(state.abbr)[item];
+        
+      }
+      else{
+        return payload;
+      }
+    
+  }
 };
 
 export const getters = {};
@@ -55,6 +72,23 @@ export default {
       annotations: [],
       currentClass: {},
       fileName:"",
+      taggerName:"",
+       abbr: {
+        Name: "PER",
+        Gender: "GEN",
+        Date: "DATE",
+        City: "CITY",
+        Address: "LOC",
+        Skills: "SKILL",
+        institute_name: "INS",
+        degree: "DEGREE",
+        major: "MAJOR",
+        work_organization: "ORG",
+        Position: "POS",
+        Certificates: "CER",
+        english_skill_level: "ENGLEVEL",
+      },
+     
     };
   },
   getters,

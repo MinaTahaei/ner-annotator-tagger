@@ -1,4 +1,11 @@
 <template>
+<div>
+
+    <div class="in">
+      <label style="font-size:14px">Name : </label>
+    <input @keyup="saveName" v-model="username" type="text">
+
+    </div>
   <div class="field is-grouped is-grouped-multiline">
     <div class="control" v-for="cl in classes" :key="cl.id">
       <div class="tags is-medium has-addons">
@@ -7,7 +14,7 @@
           :class="{ 'is-link': cl.id === currentClass.id }"
           @click="setCurrentClass(cl.id)"
         >
-          {{ cl.name }}
+          {{ tagName(cl.name) }}
         </a>
         <!-- <a class="tag is-medium is-delete" @click="removeClass(cl.id)"></a> -->
       </div>
@@ -37,6 +44,7 @@
       </button>
     </p> -->
   </div>
+</div>
 </template>
 
 <script>
@@ -47,13 +55,46 @@ export default {
     return {
       showNewClassInput: false,
       newClassName: "",
+      username:'',
     };
   },
-  mounted(){
-    let array = ["Name","Email","mobile_number","Landline","Gender",
-    "Date","City","Address","Skills","institute_name","degree","major","work_organization","Position","Certificates","english_skill_level","marital_status"];
-    for(let i = 0 ; i<array.length ; i++)
-      this.$store.commit("addClass",array[i])
+  mounted() {
+    let ALL_TAGS = {
+      Name: "PER",
+      Gender: "GEN",
+      Date: "DATE",
+      City: "CITY",
+      Address: "LOC",
+      Skills: "SKILL",
+      institute_name: "INS",
+      degree: "DEGREE",
+      major: "MAJOR",
+      work_organization: "ORG",
+      Position: "POS",
+      Certificates: "CER",
+      english_skill_level: "ENGLEVEL",
+    };
+    let array = [
+      "Name",
+      "Gender",
+      "Date",
+      "City",
+      "Address",
+      "Skills",
+      "institute_name",
+      "degree",
+      "major",
+      "work_organization",
+      "Position",
+      "Certificates",
+      "english_skill_level",
+    ];
+    for (let i = 0; i < array.length; i++){
+      
+
+        this.$store.commit("addClass", ALL_TAGS[array[i]]);
+      
+    }
   },
   computed: {
     ...mapState(["classes", "currentClass"]),
@@ -67,6 +108,9 @@ export default {
   },
   methods: {
     ...mapMutations(["removeClass", "setCurrentClass"]),
+    saveName(){
+      this.$store.commit('setTaggerName',this.username)
+    },
     saveNewClass() {
       this.$store.commit("addClass", this.newClassName);
       this.showNewClassInput = false;
@@ -77,6 +121,36 @@ export default {
         this.saveNewClass();
       }
     },
+    tagName(i){
+      let ALL_TAGS = {
+      Name: "PER",
+      Gender: "GEN",
+      Date: "DATE",
+      City: "CITY",
+      Address: "LOC",
+      Skills: "SKILL",
+      institute_name: "INS",
+      degree: "DEGREE",
+      major: "MAJOR",
+      work_organization: "ORG",
+      Position: "POS",
+      Certificates: "CER",
+      english_skill_level: "ENGLEVEL",
+    };
+    if(Object.values(ALL_TAGS).includes(i)){
+        let item = Object.values(ALL_TAGS).indexOf(i)
+        return Object.keys(ALL_TAGS)[item];
+        
+      }
+      else{
+        return i;
+      }
+    }
   },
 };
 </script>
+<style scoped>
+.in{
+  margin-bottom: 20px;
+}
+</style>

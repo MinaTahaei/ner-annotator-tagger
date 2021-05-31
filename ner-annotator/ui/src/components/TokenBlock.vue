@@ -2,7 +2,7 @@
   <mark :style="bgColor">
     <Token :token="t" v-for="t in token.tokens" :key="t.start" />
     <span class="tag">
-      {{ token.label }}
+      {{tagName(token.label)}}
       <a class="delete is-small" @click="$emit('remove-block', token.start)"></a>
     </span>
   </mark>
@@ -19,8 +19,36 @@ export default {
       bgColor:''
     }
   },
+  methods:{
+    tagName(i){
+      let ALL_TAGS = {
+      Name: "PER",
+      Gender: "GEN",
+      Date: "DATE",
+      City: "CITY",
+      Address: "LOC",
+      Skills: "SKILL",
+      institute_name: "INS",
+      degree: "DEGREE",
+      major: "MAJOR",
+      work_organization: "ORG",
+      Position: "POS",
+      Certificates: "CER",
+      english_skill_level: "ENGLEVEL",
+    };
+    
+    if(Object.values(ALL_TAGS).includes(i)){
+        let item = Object.values(ALL_TAGS).indexOf(i)
+        return Object.keys(ALL_TAGS)[item];
+        
+      }
+      else{
+        return i;
+      }
+    }
+  },
   mounted(){
-    switch(this.token.label){
+    switch(this.tagName(this.token.label)){
       case "Name":
         this.bgColor = "background-color:#f85aba !important"
         break;
@@ -96,6 +124,7 @@ export default {
   components: {
     Token
   },
+  
   
   
 }

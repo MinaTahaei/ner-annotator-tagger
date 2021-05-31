@@ -7,6 +7,7 @@
 </template>
 <script>
 import {mapState} from "vuex";
+import Swal from "sweetalert2";
 export default {
   name: "Export",
   computed: {
@@ -14,13 +15,19 @@ export default {
   },
   methods: {
     generateJSONExport() {
+      if(this.$store.state.taggerName === "" | this.$store.state.taggerName === undefined){
+        Swal.fire("Enter your name","","warning");
+        return;
+      }
       const filename = this.$store.state.fileName + ".json";
       const output = {
+        'taggerName':this.$store.state.taggerName,
         "classes": this.classes.map(c => c.name),
         "annotations": this.annotations
       }
-      const jsonStr = JSON.stringify(output);
 
+      const jsonStr = JSON.stringify(output);
+      console.log(jsonStr)
       let element = document.createElement("a");
       element.setAttribute(
         "href",
