@@ -22,18 +22,18 @@ export default {
   methods:{
     tagName(i){
       let ALL_TAGS = {
-      Name: "PER",
-      Gender: "GEN",
-      Date: "DATE",
-      City: "CITY",
-      Address: "LOC",
-      Skills: "SKILL",
+      name: "PER",
+      gender: "GEN",
+      date: "DATE",
+      city: "CITY",
+      address: "LOC",
+      skills: "SKILL",
       institute_name: "INS",
       degree: "DEGREE",
       major: "MAJOR",
       work_organization: "ORG",
-      Position: "POS",
-      Certificates: "CER",
+      position: "POS",
+      certificates: "CER",
       english_skill_level: "ENGLEVEL",
     };
     
@@ -49,31 +49,31 @@ export default {
   },
   mounted(){
     switch(this.tagName(this.token.label)){
-      case "Name":
+      case "name":
         this.bgColor = "background-color:#f85aba !important"
         break;
-      case "Email":
+      case "email":
         this.bgColor = "background-color:#87ceeb !important"
         break;
-      case "Landline":
+      case "landline":
         this.bgColor = "background-color:#ddae21 !important"
         break;
-      case "Gender":
+      case "gender":
         this.bgColor = "background-color:#ddae21 !important"
         break;
       case "personal_summary":
         this.bgColor = "background-color:#FF5733  !important"
         break;
-      case "Birth_Date":
+      case "birth_Date":
         this.bgColor = "background-color:#34D037 !important"
         break;
-      case "City":
+      case "city":
         this.bgColor = "background-color:#9D34D1 !important"
         break;
-      case "Address":
+      case "address":
         this.bgColor = "background-color:#D13451 !important"
         break;
-      case "Skills":
+      case "skills":
         this.bgColor = "background-color:#7127E1 !important"
         break;
       case "institute_name":
@@ -94,7 +94,7 @@ export default {
       case "work_organization":
         this.bgColor = "background-color:#1BF5CD !important"
         break;
-      case "Position":
+      case "position":
         this.bgColor = "background-color:#F5DB1B !important"
         break;
       case "work_start_year":
@@ -106,7 +106,7 @@ export default {
       case "work_summary":
         this.bgColor = "background-color:#1B6EF5 !important"
         break;
-      case "Certificates":
+      case "certificates":
         this.bgColor = "background-color:#55F51B !important"
         break;
       case "english_skill_level":

@@ -1,4 +1,5 @@
 import nltk
+import json
 import os
 from flask import Flask, request, jsonify
 from flask_cors import cross_origin
@@ -25,6 +26,19 @@ def tokenize():
 def detokenize():
     tokens = request.json["tokens"]
     return {"text": TreebankWordDetokenizer().detokenize(tokens)}
+
+@app.route("/files/<fname>", methods=["POST"])
+@cross_origin()
+def save(fname):
+    name = request.json["taggerName"]
+    try:
+        os.mkdir('./InputFiles/%s' % (name))
+    except:
+        print('none')
+    f = open('./InputFiles/%s/%s' % (name,fname),'w')
+    json.dump(request.json, f)
+    f.close()
+    return 'True'
 
 @app.route("/files", methods=["GET"])
 @cross_origin()

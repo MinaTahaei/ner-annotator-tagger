@@ -171,10 +171,16 @@ export default {
       this.currentIndex++;
       this.tokenizeCurrentSentence();
     },
-    saveTags() {
+    async saveTags() {
+      if(this.$store.state.taggerName === "" | this.$store.state.taggerName === undefined){
+        Swal.fire("Enter your name","","warning");
+        return;
+      }
       axios
         .post("/detokenize", { tokens: this.tm.words })
         .then((res) => {
+         
+          
           let fun = this.tm.exportAsAnnotation();
           let len = fun.length;
           let array = [];
@@ -186,18 +192,18 @@ export default {
           len = this.$store.state.classes.length;
           let notIncluded = [];
           let ALL_TAGS = {
-            Name: "PER",
-            Gender: "GEN",
-            Date: "DATE",
-            City: "CITY",
-            Address: "LOC",
-            Skills: "SKILL",
+            name: "PER",
+            gender: "GEN",
+            date: "DATE",
+            city: "CITY",
+            address: "LOC",
+            skills: "SKILL",
             institute_name: "INS",
             degree: "DEGREE",
             major: "MAJOR",
             work_organization: "ORG",
-            Position: "POS",
-            Certificates: "CER",
+            position: "POS",
+            certificates: "CER",
             english_skill_level: "ENGLEVEL",
           };
           
@@ -232,17 +238,18 @@ export default {
                 ]);
                 this.currentIndex++;
                 this.tokenizeCurrentSentence();
-
+                axios.post(`/files/${this.$store.state.fileName}`, {
+            'taggerName':this.$store.state.taggerName,
+            "classes": this.classes.map(c => c.name),
+            "annotations": this.annotations
+          })
                 Swal.fire("Saved!", "", "success");
               } else if (result.isDenied) {
                 Swal.fire("Changes are not saved", "", "info");
               }
             });
           }
-        })
-        .catch((e) => {
-          console.log(e);
-        });
+        })     
     },
     dialogBox() {},
   },
