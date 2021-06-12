@@ -36,9 +36,11 @@
           </div>
         </div>
       </div>
-      <template v-for="file in files" :key="file">
-        <button @click="select_file(file)" class="file-box">{{ file }}</button>
-      </template>
+      <div >
+        <button @click="select_file(files[index--])" class="file-box">Previous</button>
+        <span> {{selectedFile}} </span>
+        <button @click="select_file(files[index++])" class="file-box">Next</button>
+      </div>
     </div>
   </div>
 </template>
@@ -62,6 +64,7 @@ export default {
       currentSentence: {},
       currentIndex: 0,
       redone: "",
+      index:0
     };
   },
   components: {
@@ -75,7 +78,6 @@ export default {
   },
   watch: {
     inputSentences() {
-      alert("change");
       this.currentIndex = 0;
       this.tokenizeCurrentSentence();
     },
@@ -99,11 +101,12 @@ export default {
         .get("/files")
         .then((res) => {
           this.files = res.data;
+          this.select_file(this.files[0])
         })
         .catch((err) => alert(err));
     },
     select_file(name) {
-      this.selectFile = name;
+      this.selectedFile = name;
       let dotIndex = name.lastIndexOf('.');
       this.$store.commit('setFileName',name.substring(0,dotIndex))
 
@@ -269,5 +272,7 @@ export default {
   background-color: rgba(71, 231, 170, 0.466);
   text-align: center;
   font-size: 12px;
+  width: 80px;
+  cursor: pointer;
 }
 </style>
