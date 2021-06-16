@@ -36,10 +36,10 @@
           </div>
         </div>
       </div>
-      <div >
-        <button @click="select_file(files[index--])" class="file-box">Previous</button>
-        <span> {{selectedFile}} </span>
-        <button @click="select_file(files[index++])" class="file-box">Next</button>
+      <div>
+        <button @click="--index" class="file-box">Previous</button>
+        <span> {{ selectedFile }} </span>
+        <button @click="++index" class="file-box">Next</button>
       </div>
     </div>
   </div>
@@ -64,7 +64,7 @@ export default {
       currentSentence: {},
       currentIndex: 0,
       redone: "",
-      index:0
+      index: -1,
     };
   },
   components: {
@@ -81,6 +81,9 @@ export default {
       this.currentIndex = 0;
       this.tokenizeCurrentSentence();
     },
+    index: function(){
+      this.select_file()
+    }  
   },
   created() {
     if (this.inputSentences.length) {
@@ -96,27 +99,48 @@ export default {
   },
   methods: {
     ...mapMutations(["setInputSentences"]),
+    select_file(){
+      if (this.index >= 0 && this.index < this.files.length){
+
+          this.selectedFile = this.files[this.index];
+          let dotIndex = this.selectedFile.lastIndexOf(".");
+          this.$store.commit(
+            "setFileName",
+            this.selectedFile.substring(0, dotIndex)
+        );
+
+        axios
+          .get(`/files/${this.selectedFile}`)
+          .then((res) => {
+            this.setInputSentences(res.data);
+          })
+          .catch((err) => alert(err));
+        }
+        else{
+          if(this.index>0){
+            this.index = this.files.length-1;
+          }
+          else{
+            this.index = 0;
+          }
+        }
+      },
+
+    
     getFiles() {
       axios
         .get("/files")
         .then((res) => {
           this.files = res.data;
-          this.select_file(this.files[0])
+        })
+        .then(() => {
+          this.index = 0;
+          
         })
         .catch((err) => alert(err));
     },
-    select_file(name) {
-      this.selectedFile = name;
-      let dotIndex = name.lastIndexOf('.');
-      this.$store.commit('setFileName',name.substring(0,dotIndex))
-
-      axios
-        .get(`/files/${name}`)
-        .then((res) => {
-          this.setInputSentences(res.data);
-        })
-        .catch((err) => alert(err));
-    },
+   
+    
     tokenizeCurrentSentence() {
       if (this.currentIndex >= this.inputSentences.length) {
         // TODO show completed message
@@ -175,84 +199,89 @@ export default {
       this.tokenizeCurrentSentence();
     },
     async saveTags() {
-      if(this.$store.state.taggerName === "" | this.$store.state.taggerName === undefined){
-        Swal.fire("Enter your name","","warning");
+      if (
+        (this.$store.state.taggerName === "") |
+        (this.$store.state.taggerName === undefined)
+      ) {
+        Swal.fire("Enter your name", "", "warning");
         return;
       }
-      axios
-        .post("/detokenize", { tokens: this.tm.words })
-        .then((res) => {
-         
-          
-          let fun = this.tm.exportAsAnnotation();
-          let len = fun.length;
-          let array = [];
-          for (let i = 0; i < len; i++) {
-            if (!array.includes(fun[i][2])) {
-              array.push(fun[i][2]);
+      axios.post("/detokenize", { tokens: this.tm.words }).then((res) => {
+        let fun = this.tm.exportAsAnnotation();
+        let len = fun.length;
+        let array = [];
+        for (let i = 0; i < len; i++) {
+          if (!array.includes(fun[i][2])) {
+            array.push(fun[i][2]);
+          }
+        }
+        len = this.$store.state.classes.length;
+        let notIncluded = [];
+        let ALL_TAGS = {
+          name: "PER",
+          gender: "GEN",
+          date: "DATE",
+          city: "CITY",
+          address: "LOC",
+          skills: "SKILL",
+          institute_name: "INS",
+          degree: "DEGREE",
+          major: "MAJOR",
+          work_organization: "ORG",
+          position: "POS",
+          certificates: "CER",
+          english_skill_level: "ENGLEVEL",
+        };
+
+        for (let i = 0; i < len; i++) {
+          if (!array.includes(this.$store.state.classes[i].name.toString())) {
+            if (
+              Object.values(ALL_TAGS).includes(
+                this.$store.state.classes[i].name
+              )
+            ) {
+              let item = Object.values(ALL_TAGS).indexOf(
+                this.$store.state.classes[i].name
+              );
+              notIncluded.push(Object.keys(ALL_TAGS)[item]);
+            } else {
+              notIncluded.push(this.$store.state.classes[i].name);
             }
           }
-          len = this.$store.state.classes.length;
-          let notIncluded = [];
-          let ALL_TAGS = {
-            name: "PER",
-            gender: "GEN",
-            date: "DATE",
-            city: "CITY",
-            address: "LOC",
-            skills: "SKILL",
-            institute_name: "INS",
-            degree: "DEGREE",
-            major: "MAJOR",
-            work_organization: "ORG",
-            position: "POS",
-            certificates: "CER",
-            english_skill_level: "ENGLEVEL",
-          };
-          
-          for (let i = 0; i < len; i++) {
-            if (!array.includes(this.$store.state.classes[i].name.toString())) {
-              if (
-                Object.values(ALL_TAGS).includes(
-                  this.$store.state.classes[i].name
-                )
-              ) {
-                let item = Object.values(ALL_TAGS).indexOf(this.$store.state.classes[i].name);
-                notIncluded.push(Object.keys(ALL_TAGS)[item]);
-              } else {
-                notIncluded.push(this.$store.state.classes[i].name);
-              }
+        }
+        // console.log(notIncluded.length + " : " + len)
+        if (notIncluded.length > 0) {
+          Swal.fire({
+            title: "Do you want to save?",
+            showDenyButton: true,
+            
+            confirmButtonText: `Save`,
+            denyButtonText: `Don't save`,
+          }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+              this.$store.commit("addAnnotation", [
+                res.data.text,
+                { entities: this.tm.exportAsAnnotation() },
+              ]);
+              this.currentIndex++;
+              this.tokenizeCurrentSentence();
+              axios.post(`/files/${this.$store.state.fileName}`, {
+                taggerName: this.$store.state.taggerName,
+                classes: this.classes.map((c) => c.name),
+                annotations: this.annotations,
+              });
+              Swal.fire("Saved!", "", "success");
+              let ind = this.files.indexOf(this.selectedFile);
+              this.files.splice(ind,1);
+              this.select_file();
+            } else if (result.isDenied) {
+              Swal.fire("Changes are not saved", "", "info");
             }
-          }
-          // console.log(notIncluded.length + " : " + len)
-          if (notIncluded.length > 0) {
-            Swal.fire({
-              title: "Do you want to save?",
-              showDenyButton: true,
-              text: "you have not selected these tokens yet : \n" + notIncluded,
-              confirmButtonText: `Save`,
-              denyButtonText: `Don't save`,
-            }).then((result) => {
-              /* Read more about isConfirmed, isDenied below */
-              if (result.isConfirmed) {
-                this.$store.commit("addAnnotation", [
-                  res.data.text,
-                  { entities: this.tm.exportAsAnnotation() },
-                ]);
-                this.currentIndex++;
-                this.tokenizeCurrentSentence();
-                axios.post(`/files/${this.$store.state.fileName}`, {
-            'taggerName':this.$store.state.taggerName,
-            "classes": this.classes.map(c => c.name),
-            "annotations": this.annotations
-          })
-                Swal.fire("Saved!", "", "success");
-              } else if (result.isDenied) {
-                Swal.fire("Changes are not saved", "", "info");
-              }
-            });
-          }
-        })     
+          });
+        }
+      });
+      
     },
     dialogBox() {},
   },
