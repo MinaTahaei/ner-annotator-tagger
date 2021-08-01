@@ -35,7 +35,7 @@ def save(fname):
         os.mkdir('./InputFiles/%s' % (name))
     except:
         print('none')
-    f = open('./InputFiles/%s/%s' % (name,fname),'w')
+    f = open('./InputFiles/%s/%s.json' % (name,fname),'w')
     json.dump(request.json, f)
     f.close()
     return 'True'
@@ -46,16 +46,25 @@ def files():
     files_names = []
     list = os.listdir('./Data')
     for item in list:
-        files_names.append(item)
+        files = os.listdir('./Data/%s' %(1))
+        for fileItem in files:
+            files_names.append(fileItem)
     return jsonify(files_names)
 
 @app.route("/files/<name>", methods=["GET"])
 @cross_origin()
 def fileData(name):
-     f = open('./Data/%s' % (name),'r')
-     data = f.read()
-     f.close()
-     return jsonify(data)   
+    path = ''
+    try: 
+        int(name[4:6])
+        path = name[4:6]
+    except ValueError:
+        path = int(name[4:5])
+    # f = open('./Data/%s' % (name),'r')
+    # data = f.read()
+    # f.close()
+    # return jsonify(data)   
+    return 'salam'
     
 if __name__ == "__main__":
     app.run(port=5555, debug=True)

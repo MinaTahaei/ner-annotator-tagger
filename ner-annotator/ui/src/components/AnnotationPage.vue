@@ -266,10 +266,11 @@ export default {
               ]);
               this.currentIndex++;
               this.tokenizeCurrentSentence();
+
               axios.post(`/files/${this.$store.state.fileName}`, {
                 taggerName: this.$store.state.taggerName,
                 classes: this.classes.map((c) => c.name),
-                annotations: this.annotations,
+                annotations: this.annotations[0][1],
               });
               Swal.fire("Saved!", "", "success");
               let ind = this.files.indexOf(this.selectedFile);

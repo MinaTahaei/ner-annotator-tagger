@@ -32,7 +32,7 @@ export const mutations = {
     state.currentClass = state.classes.find((c) => c.id === payload);
   },
   addAnnotation(state, payload) {
-    state.annotations.push(payload);
+    state.annotations[0]=payload;
   },
   setSeparator(state, payload) {
     state.separator = payload;
