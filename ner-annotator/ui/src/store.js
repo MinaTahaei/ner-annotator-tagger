@@ -75,7 +75,7 @@ export default {
       taggerName:"",
        abbr: {
         name: "PER",
-        gender: "GEN",
+        // gender: "GEN",
         date: "DATE",
         city: "CITY",
         address: "LOC",
@@ -83,10 +83,10 @@ export default {
         institute_name: "INS",
         degree: "DEGREE",
         major: "MAJOR",
-        work_organization: "ORG",
+        organization: "ORG",
         position: "POS",
         certificates: "CER",
-        english_skill_level: "ENGLEVEL",
+        level: "ENGLEVEL",
       },
      
     };

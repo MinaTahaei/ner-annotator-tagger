@@ -23,7 +23,7 @@ export default {
     tagName(i){
       let ALL_TAGS = {
       name: "PER",
-      gender: "GEN",
+      // gender: "GEN",
       date: "DATE",
       city: "CITY",
       address: "LOC",
@@ -31,10 +31,10 @@ export default {
       institute_name: "INS",
       degree: "DEGREE",
       major: "MAJOR",
-      work_organization: "ORG",
+      organization: "ORG",
       position: "POS",
       certificates: "CER",
-      english_skill_level: "ENGLEVEL",
+      level: "ENGLEVEL",
     };
     
     if(Object.values(ALL_TAGS).includes(i)){
@@ -58,9 +58,9 @@ export default {
       case "landline":
         this.bgColor = "background-color:#ddae21 !important"
         break;
-      case "gender":
-        this.bgColor = "background-color:#ddae21 !important"
-        break;
+      // case "gender":
+      //   this.bgColor = "background-color:#ddae21 !important"
+      //   break;
       case "personal_summary":
         this.bgColor = "background-color:#FF5733  !important"
         break;
@@ -91,7 +91,7 @@ export default {
       case "education_summary":
         this.bgColor = "background-color:#F51B1B !important"
         break;
-      case "work_organization":
+      case "organization":
         this.bgColor = "background-color:#1BF5CD !important"
         break;
       case "position":
@@ -109,7 +109,7 @@ export default {
       case "certificates":
         this.bgColor = "background-color:#55F51B !important"
         break;
-      case "english_skill_level":
+      case "level":
         this.bgColor = "background-color:#F51B55 !important"
         break;
       

@@ -19,6 +19,7 @@
               @remove-block="onRemoveBlock"
             />
           </div>
+          <!-- <textarea style="width:100%;height:500px;direction:rtl" v-model="computedWords"></textarea> -->
         </div>
         <div class="panel-block">
           <div class="field is-grouped">
@@ -75,6 +76,9 @@ export default {
   },
   computed: {
     ...mapState(["inputSentences", "classes", "annotations", "currentClass"]),
+    computedWords:function(){
+      return this.tm.words.join(' ');
+    }
   },
   watch: {
     inputSentences() {
@@ -219,7 +223,7 @@ export default {
         let notIncluded = [];
         let ALL_TAGS = {
           name: "PER",
-          gender: "GEN",
+          // gender: "GEN",
           date: "DATE",
           city: "CITY",
           address: "LOC",
@@ -227,10 +231,10 @@ export default {
           institute_name: "INS",
           degree: "DEGREE",
           major: "MAJOR",
-          work_organization: "ORG",
+          organization: "ORG",
           position: "POS",
           certificates: "CER",
-          english_skill_level: "ENGLEVEL",
+          level: "ENGLEVEL",
         };
 
         for (let i = 0; i < len; i++) {
@@ -304,5 +308,11 @@ export default {
   font-size: 12px;
   width: 80px;
   cursor: pointer;
+}
+.panel-heading{
+  padding-top:30px !important;
+  top: 0px;
+  z-index:1;
+  position: sticky;
 }
 </style>

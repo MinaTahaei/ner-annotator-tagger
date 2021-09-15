@@ -61,7 +61,7 @@ export default {
   mounted() {
     let ALL_TAGS = {
       name: "PER",
-      gender: "GEN",
+      // gender: "GEN",
       date: "DATE",
       city: "CITY",
       address: "LOC",
@@ -69,14 +69,14 @@ export default {
       institute_name: "INS",
       degree: "DEGREE",
       major: "MAJOR",
-      work_organization: "ORG",
+      organization: "ORG",
       position: "POS",
       certificates: "CER",
-      english_skill_level: "ENGLEVEL",
+      level: "ENGLEVEL",
     };
     let array = [
       "name",
-      "gender",
+      // "gender",
       "date",
       "city",
       "address",
@@ -84,10 +84,10 @@ export default {
       "institute_name",
       "degree",
       "major",
-      "work_organization",
+      "organization",
       "position",
       "certificates",
-      "english_skill_level",
+      "level",
     ];
     for (let i = 0; i < array.length; i++){
       
@@ -124,7 +124,7 @@ export default {
     tagName(i){
       let ALL_TAGS = {
       name: "PER",
-      gender: "GEN",
+      // gender: "GEN",
       date: "DATE",
       city: "CITY",
       address: "LOC",
@@ -132,10 +132,10 @@ export default {
       institute_name: "INS",
       degree: "DEGREE",
       major: "MAJOR",
-      work_organization: "ORG",
+      organization: "ORG",
       position: "POS",
       certificates: "CER",
-      english_skill_level: "ENGLEVEL",
+      level: "ENGLEVEL",
     };
     if(Object.values(ALL_TAGS).includes(i)){
         let item = Object.values(ALL_TAGS).indexOf(i)
